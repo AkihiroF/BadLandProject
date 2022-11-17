@@ -1,28 +1,21 @@
-using DG.Tweening;
+using Cinemachine;
 using UnityEngine;
 
 namespace Source.Level
 {
     public class CameraController
     {
-        private Camera _camera;
-        private Vector2 _endPosition;
-        private float _timeDestination;
-        public CameraController(Camera cam, Vector2 endPosition, float time)
+        private CinemachineVirtualCamera _virtualCamera;
+        private Transform _player;
+        public CameraController(CinemachineVirtualCamera virtualCamera, Transform player)
         {
-            _camera = cam;
-            _endPosition = endPosition;
-            _timeDestination = time;
+            _player = player;
+            _virtualCamera = virtualCamera;
         }
 
-        public void StartMove()
+        public void BindParameterCamera()
         {
-            _camera.transform.DOMoveX(_endPosition.x, _timeDestination);
-        }
-
-        public void StopMove()
-        {
-            _camera.DOPause();
+            _virtualCamera.Follow = _player;
         }
     }
 }

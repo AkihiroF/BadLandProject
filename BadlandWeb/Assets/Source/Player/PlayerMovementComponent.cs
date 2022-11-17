@@ -7,15 +7,20 @@ namespace Source.Player
       [SerializeField] private float speedMove;
       [SerializeField] private float speedUp;
       [SerializeField] private float speedRotation;
-      private Rigidbody2D _rb;
+      [SerializeField] private float maxSpeedMove;
+      [SerializeField] private float maxSpeedUp;
+      private Rigidbody _rb;
       private bool _isWakeUp = false;
       private bool _isWakeRight = false; 
       private bool _isWakeLeft = false;
+      private Vector3 _forceRotation;
       
       
       private void OnEnable()
       {
-         _rb = GetComponent<Rigidbody2D>();
+         _rb = GetComponent<Rigidbody>();
+         _forceRotation = (speedRotation * Mathf.Deg2Rad) * _rb.inertiaTensor;
+         Debug.Log(_forceRotation);
       }
       
       public void WakeUp(float value)
@@ -35,29 +40,43 @@ namespace Source.Player
 
       private void FixedUpdate()
       {
+         if (_rb.velocity.x > maxSpeedMove)
+         {
+            _rb.velocity = new Vector2(maxSpeedMove, _rb.velocity.y);
+         }
+
+         if (_rb.velocity.x < -maxSpeedMove)
+         {
+            _rb.velocity = new Vector2(-maxSpeedMove, _rb.velocity.y);
+         }
+
+         if (_rb.velocity.y > maxSpeedUp)
+         {
+            _rb.velocity = new Vector2(_rb.velocity.x, maxSpeedUp);
+         }
+         
          if (_isWakeUp)
          {
-            _rb.AddForce(Vector2.up * speedUp, ForceMode2D.Impulse);
-
-            if (transform.rotation.z > 0)
+            _rb.AddForce(Vector2.up * speedUp, ForceMode.Impulse);
+            if (transform.eulerAngles.z > 180)
             {
-               _rb.AddTorque(-transform.eulerAngles.z * speedRotation * Time.deltaTime);
+               _rb.AddTorque(_forceRotation, ForceMode.Impulse);
             }
 
-            if (transform.rotation.z < 0)
+            if (transform.eulerAngles.z < 180)
             {
-               _rb.AddTorque(transform.eulerAngles.z * speedRotation * Time.deltaTime);
+               _rb.AddTorque(-_forceRotation, ForceMode.Impulse);
             }
          }
 
          if (_isWakeLeft)
          {
-            _rb.AddForce(Vector2.left*speedMove, ForceMode2D.Impulse);
+            _rb.AddForce(Vector2.left*speedMove, ForceMode.Impulse);
          }
 
          if (_isWakeRight)
          {
-            _rb.AddForce(Vector2.right*speedMove, ForceMode2D.Impulse);
+            _rb.AddForce(Vector2.right*speedMove, ForceMode.Impulse);
          }
       }
    }

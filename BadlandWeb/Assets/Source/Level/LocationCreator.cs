@@ -87,7 +87,6 @@ namespace Source.Level
                 if (locations.Count > 1)
                 {
                     randomIndex = rnd.Next(0, locations.Count);
-                    Debug.Log(randomIndex);
                 }
                 else
                 {

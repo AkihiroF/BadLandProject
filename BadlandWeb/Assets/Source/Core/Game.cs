@@ -21,7 +21,7 @@ namespace Source.Core
         {
             EnableInput();
             BindEvents();
-            _cameraController.StartMove();
+            _cameraController.BindParameterCamera();
         }
         private void EnableInput()
         {

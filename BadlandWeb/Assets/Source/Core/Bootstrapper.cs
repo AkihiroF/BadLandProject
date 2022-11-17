@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Cinemachine;
 using Source.Level;
 using Source.Player;
 using UnityEngine;
@@ -10,8 +11,7 @@ namespace Source.Core
     {
         [SerializeField] private GameObject playerPrefab;
         [SerializeField] private List<PartLocation> partsLocation;
-        [SerializeField] private Camera cam;
-        [SerializeField] private float timeDestinationCamera;
+        [SerializeField] private CinemachineVirtualCamera virtualCamera;
         private PlayerMovementComponent _playerMovementComponent;
         private PlayerMovement _playerMovement;
         private InputManager _inputManager;
@@ -26,7 +26,7 @@ namespace Source.Core
             
             _playerMovement = new PlayerMovement(_playerMovementComponent);
             _inputManager = new InputManager();
-            _cameraController = new CameraController(cam, _locationCreator.GetPositionEnd(), timeDestinationCamera);
+            _cameraController = new CameraController(virtualCamera, _playerMovementComponent.transform);
             _game = new Game(_inputManager, _playerMovement, _cameraController);
             CreateMap(_locationCreator.GetLocation());
         }
